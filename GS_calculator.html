@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Title</title>
+    <link rel="stylesheet" href="GS_calculator.css">
+    <script src="GS_calculator.js" defer></script>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <h1>G.S Calculator</h1>
+        <nav>
+            <form id="gs_calc_form">
+                <div class="gs_calc">
+                    <div class="variables">
+                        <label>
+                            Enter Total G.S
+                            <input type="number" id="total_gs" required>
+                        </label>
+                        <label>
+                            Enter # of Completed Bays
+                            <input type="number"  id="completed_bays" required>
+                        </label>
+                        <label>
+                            Enter the Team Size
+                            <input type="number" id="team_size" required>
+                        </label>
+                        <button type='submit'>Submit</button>
+                    </div>
+
+                    <div class="percent">
+                        <label id="percent_label"> </label>
+                    </div>
+                    <div class="slider_ui">
+                        <input type="range" id="dynamic_slider" style="opacity: 0;" min="1" max="100" step="1">
+                        <output id="sliderValue"></output>
+                    </div>
+                    <div class="slider_value">
+                        <label id="slider_label"></label>
+                    </div>
+                </div>
+            </form>
+
+            <script>
+                const form = document.getElementById('gs_calc_form');
+                const slider = document.getElementById('dynamic_slider');
+                const output = document.getElementById('sliderValue');
+
+                let weeklyGS = 0;
+                let bays_completed = 0;
+                let daily_team_size = 0;
+
+
+                slider.oninput = function() {
+                    const currentBays = Number(this.value);
+
+                    // Number of slider jumps from the starting point
+                    const count = (currentBays - bays_completed) / daily_team_size;
+
+                    // Calculate percentage complete
+                    const percentage = (currentBays / weeklyGS) * 100;
+
+                    output.textContent = weeklyGS - currentBays + " bays remaining";
+
+                    document.getElementById("percent_label").innerText =
+                        `${count} | ${percentage.toFixed(2)}%`;
+                }
+
+                function updateLabel(event) {
+                    event.preventDefault();
+
+                    weeklyGS = document.getElementById("total_gs").value;
+                    bays_completed = document.getElementById("completed_bays").value;
+                    daily_team_size = document.getElementById("team_size").value;
+                    const bays_done = bays_completed;
+                    const bays_to_do = weeklyGS - bays_completed;
+                    
+                    const quotient = Math.floor(weeklyGS/daily_team_size);
+                    const remainder = weeklyGS % daily_team_size;
+
+                    const percentage = (bays_completed / weeklyGS) * 100
+                    const count = 0
+
+                    console.log(percentage)
+
+                    if (Number.isNaN(percentage)) {
+                        document.getElementById("percent_label").innerText = "Please enter valid numbers"
+                    }
+                    else if (!Number.isFinite(percentage)) {
+                        document.getElementById("percent_label").innerText = "Inputs must be greater than 0.";
+                        return;
+                    }
+                    else {
+                        document.getElementById("percent_label").innerText = count + "|" + percentage.toFixed(2) + "%";
+                        slider.style.opacity = '1';
+                        slider.min = bays_completed
+                        slider.max = weeklyGS
+                        slider.step = daily_team_size
+                        slider.value = bays_completed
+                        slider.oninput();
+                    }
+                }
+
+                form.addEventListener("submit", updateLabel)
+            </script>
+        </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main>
+        <article>
+            <h2>
+                <ul>
+                    <div class="link-container">
+                        <li><a href="bay_counter.html">G.S Bay Counter</a></li>
+                        <li><a href="hours_calculator.html">Hours Calculator</a></li>
+                        <li><a href="index.html">Home</a></li>
+                    </div>
+                </ul>
+            </h2>
+        </article>
+    </main>
+
+</body>
+</html>

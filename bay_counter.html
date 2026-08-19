@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Title</title>
+    <link rel="stylesheet" href="bay_counter.css">
+    <script src="bay_counter.js" defer></script>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <h1>G.S Bay Counter</h1>
+        <nav>
+            <ul>
+                <div class="timer-container">
+                    <div id="display">00:00:00.00</div>
+                    <div class="controls">
+                        <button id="startBtn">Start</button>
+                        <button id="stopBtn">Stop</button>
+                        <button id="resetBtn">Reset</button>
+                    </div>
+                </div>
+                <script>
+                    const display = document.getElementById('display');
+                    const startBtn = document.getElementById('startBtn');
+                    const stopBtn = document.getElementById('stopBtn');
+                    const resetBtn = document.getElementById('resetBtn');
+
+                    // Core tracking variables
+                    let startTime = 0;
+                    let elapsedTime = 0;
+                    let timerInterval = null;
+                    let isRunning = false;
+
+                    // Format milliseconds into HH:MM:SS.mm
+                    function formatTime(ms) {
+                        let totalSeconds = Math.floor(ms / 1000);
+                        let totalMinutes = Math.floor(totalSeconds / 60);
+                        let totalHours = Math.floor(totalMinutes / 60);
+
+                        // Extract remainder blocks
+                        let displayMs = Math.floor((ms % 1000) / 10); // get 2-digit milliseconds
+                        let displaySecs = totalSeconds % 60;
+                        let displayMins = totalMinutes % 60;
+                        let displayHours = totalHours;
+
+                        // Pad single digits with leading zeros
+                        let hrs = String(displayHours).padStart(2, '0');
+                        let mins = String(displayMins).padStart(2, '0');
+                        let secs = String(displaySecs).padStart(2, '0');
+                        let millis = String(displayMs).padStart(2, '0');
+
+                        return `${hrs}:${mins}:${secs}.${millis}`;
+                    }
+
+                    // Start Timer
+                    startBtn.addEventListener('click', () => {
+                        if (!isRunning) {
+                            isRunning = true;
+                            // Adjust start time to account for previous elapsed time if paused
+                            startTime = Date.now() - elapsedTime;
+                            
+                            // Update display roughly every 10 milliseconds
+                            timerInterval = setInterval(() => {
+                                elapsedTime = Date.now() - startTime;
+                                display.textContent = formatTime(elapsedTime);
+                            }, 10);
+                        }
+                    });
+
+                    // Stop Timer
+                    stopBtn.addEventListener('click', () => {
+                        if (isRunning) {
+                            isRunning = false;
+                            clearInterval(timerInterval); // Halts the interval loop
+                        }
+                    });
+
+                    // Reset Timer
+                    resetBtn.addEventListener('click', () => {
+                        isRunning = false;
+                        clearInterval(timerInterval);
+                        elapsedTime = 0;
+                        startTime = 0;
+                        display.textContent = "00:00:00.00";
+                    });
+                </script>
+                <div class="counter">
+                    <button onclick="minus_function()">-</button>
+                    <label id="counter_label">0</label>
+                    <button onclick="add_function()">+</button>
+                </div>
+                <div class="link-container">
+                    <li><a href="GS_calculator.html">G.S Calculator</a></li>
+                    <li><a href="hours_calculator.html">Hours Calculator</a></li>
+                    <li><a href="index.html">Home</a></li>
+                </div>
+            </ul>
+        </nav>
+    </header>
+    <script>
+        function add_function() {
+            label = document.getElementById("counter_label");
+            let currentVal = parseInt(label.innerText) || 0;
+            label.innerText = currentVal + 1;
+        }
+        function minus_function() {
+            label = document.getElementById("counter_label");
+            let currentVal = parseInt(label.innerText) || 0;
+            if (currentVal > 0) {
+                label.innerText = currentVal - 1;
+            }
+            else {
+                return
+            }
+        }
+    </script>
+</body>
+</html>
