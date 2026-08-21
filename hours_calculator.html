@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Title</title>
+    <link rel="stylesheet" href="hours_calculator.css">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <button id="lang-toggle">Español</button>
+        <h1 data-key="hours">Friday</h1>
+        <nav>
+            <form id="gs-calc">
+                <label data-key="hoursW">Hours Worked</label>
+                <input id="hours_worked" type="number">
+                <label data-key="minsW">Minutes Worked</label>
+                <input id="minutes_worked" type="number">
+                <label data-key="CIH">Clock-in Hour</label>
+                <input id="clock_in_hour" type="number">
+                <label data-key="CIM">Clock-in Minute</label>
+                <input id="clock_in_minute" type="number">
+                <button data-key="submit" id="submit" type="submit" id="gs_submit_button" onclick="calculate_hours(event)">Submit</button>
+                <label data-key="results" id="hours_result"></label>
+            </form>
+        </nav>
+    </header>
+    <script>
+    function calculate_hours(event) {
+        // 1. Prevent the form from refreshing the page on submit
+        if (event) event.preventDefault();
+
+        // 2. Grab the FRESH values from the inputs when the button is clicked
+        const hours_worked = Number(document.getElementById("hours_worked").value);
+        const minutes_worked = Number(document.getElementById("minutes_worked").value);
+        const clock_in_hour = Number(document.getElementById("clock_in_hour").value);
+        const clock_in_minute = Number(document.getElementById("clock_in_minute").value);
+
+        // 3. Perform the calculations
+        const work_week = 40;
+        const hours_to_min = hours_worked * 60;
+        const work_week_min = work_week * 60;
+        const worked_minutes = minutes_worked + hours_to_min;
+        const minutes_left = work_week_min - worked_minutes;
+        
+        const clock_in_hour_to_min = clock_in_hour * 60;
+        const time_in_min = clock_in_hour_to_min + clock_in_minute;
+        const clock_out = time_in_min + minutes_left;
+        
+        // Use let because quotient1 might be modified if >= 13
+        let quotient1 = Math.trunc(clock_out / 60);
+        const remainder1 = clock_out % 60;
+
+        // 4. Determine display formatting (Fixed = to ===)
+        if (quotient1 >= 13) {
+            quotient1 -= 12;
+            if (remainder1 === 0) {
+                document.getElementById("hours_result").textContent = "Clock out at " + quotient1 + ":" + remainder1 + "0 PM";
+            } else if (remainder1 <= 9) {
+                document.getElementById("hours_result").textContent = "Clock out at " + quotient1 + ":0" + remainder1 + " PM";
+            } else {
+                document.getElementById("hours_result").textContent = "Clock out at " + quotient1 + ":" + remainder1 + " PM";
+            }
+        } else if (quotient1 === 12) {
+            if (remainder1 === 0) {
+                document.getElementById("hours_result").textContent = "Clock out at " + quotient1 + ":" + remainder1 + "0 PM";
+            } else if (remainder1 <= 9) {
+                document.getElementById("hours_result").textContent = "Clock out at " + quotient1 + ":0" + remainder1 + " PM";
+            } else {
+                document.getElementById("hours_result").textContent = "Clock out at " + quotient1 + ":" + remainder1 + " PM";
+            }
+        } else {
+            if (remainder1 === 0) {
+                document.getElementById("hours_result").textContent = "Clock out at " + quotient1 + ":" + remainder1 + "0 AM";
+            } else if (remainder1 <= 9) {
+                document.getElementById("hours_result").textContent = "Clock out at " + quotient1 + ":0" + remainder1 + " AM";
+            } else {
+                document.getElementById("hours_result").textContent = "Clock out at " + quotient1 + ":" + remainder1 + " AM";
+            }
+        }
+    }
+    </script>
+
+    <!-- Main Content Area -->
+    <main>
+        <article>
+            <h2>
+                <ul>
+                    <div class="link-container">
+                        <li><a data-key="gs" href="GS_calculator.html">G.S Calculator</a></li>
+                        <li><a data-key="bay" href="bay_counter.html">G.S Bay Counter</a></li>
+                        <li><a data-key="home" href="index.html">Home</a></li>
+                    </div>
+                </ul>
+            </h2>
+        </article>
+    </main>
+    <script src="espanol.js" defer></script>
+    <script src="friday.js"></script>
+</body>
+</html>
