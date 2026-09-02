@@ -1,8 +1,7 @@
 h1 {
     color:white;
-    font-size: 7em;
+    font-size: 6em;
     text-align: center;
-    -webkit-text-stroke: 1px darkslategray;
 }
 
 #lang-toggle {
