@@ -1,7 +1,6 @@
 // 1. Define the translation dictionary
 const translations = {
     en: {
-        welcome: "Current Time: ",
         toggleBtn: "Español",
         gs: "G.S Calculator",
         bay: "G.S Bay Counter",
@@ -25,7 +24,6 @@ const translations = {
         pm: "PM"
     },
     es: {
-        welcome: "Hora Actual: ",
         toggleBtn: "English",
         gs: "Calculadora G.S",
         bay: "Contador de Bahías G.S",
