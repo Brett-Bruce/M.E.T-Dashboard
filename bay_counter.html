@@ -15,7 +15,7 @@
         <nav>
             <ul>
                 <div class="timer-container">
-                    <div id="display">00:00:00.00</div>
+                    <div id="display">00:00</div>
                     <div class="controls">
                         <button data-key="start" id="startBtn">Start</button>
                         <button data-key="stop" id="stopBtn">Stop</button>
@@ -52,7 +52,7 @@
                         let secs = String(displaySecs).padStart(2, '0');
                         let millis = String(displayMs).padStart(2, '0');
 
-                        return `${hrs}:${mins}:${secs}.${millis}`;
+                        return `${mins}:${secs}`;
                     }
 
                     // Start Timer
@@ -84,7 +84,7 @@
                         clearInterval(timerInterval);
                         elapsedTime = 0;
                         startTime = 0;
-                        display.textContent = "00:00:00.00";
+                        display.textContent = "00:00";
                     });
                 </script>
                 <div class="counter">
