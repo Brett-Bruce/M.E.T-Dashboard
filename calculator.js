@@ -1,48 +1,63 @@
-const form = document.getElementById('gs_calc_form');
-const slider = document.getElementById('dynamic_slider');
-const output = document.getElementById('sliderValue');
+const form = document.getElementById('gs_calc_form'); 
+const slider = document.getElementById('dynamic_slider'); 
+const output = document.getElementById('sliderValue'); 
 
-let weeklyGS = 0;
-let bays_completed = 0;
-let daily_team_size = 0;
+// Keep these as global numbers
+let openGS = 0; 
+let bays_completed = 0; 
+let weeklyGS = 0; 
+let daily_team_size = 0; 
 
 slider.oninput = function() {
-    const currentBays = Number(this.value); 
-    const count = (currentBays - bays_completed) / daily_team_size; 
-    const percentage = (currentBays / weeklyGS) * 100;
+    // 1. Read the CURRENT value of the slider as a number
+    const currentSliderVal = Number(slider.value);
     
-    const remaining = weeklyGS - currentBays;
+    // 2. Perform math based on the moving slider
+    const remaining = weeklyGS - currentSliderVal; 
     
-    // Safely reads from the global variables initialized in espanol.js
-    const text = translations[currentLang]['baysRemaining'];
-    
-    output.textContent = `${remaining} ${text}`;
-    document.getElementById("percent_label").innerText = `${count} | ${percentage.toFixed(2)}%`;
+    // Math logic: (Current Slider Position - Starting Position) / Step Size
+    // If the slider is at the start, (bays_completed - bays_completed) / step = 0
+    const count = daily_team_size > 0 
+        ? Math.floor((currentSliderVal - bays_completed) / daily_team_size) 
+        : 0;
+
+    const percentage = weeklyGS > 0 ? (currentSliderVal / weeklyGS) * 100 : 0;
+
+    // 3. Update the text elements dynamically
+    const text = translations[currentLang]['baysRemaining']; 
+    output.textContent = `${remaining} ${text}`; 
+    document.getElementById("percent_label").innerText = `${count} | ${percentage.toFixed(2)}%`; 
 }
 
 function updateLabel(event) {
-    event.preventDefault();
-    weeklyGS = document.getElementById("total_gs").value;
-    bays_completed = document.getElementById("completed_bays").value;
-    daily_team_size = document.getElementById("team_size").value;
-    const percentage = (bays_completed / weeklyGS) * 100;
-    const count = 0;
+    event.preventDefault(); 
+    
+    // Convert text inputs to numbers immediately
+    openGS = Number(document.getElementById("open_gs").value); 
+    bays_completed = Number(document.getElementById("completed_bays").value); 
+    daily_team_size = Number(document.getElementById("team_size").value); 
 
-    if (Number.isNaN(percentage)) {
-        document.getElementById("percent_label").innerText = "Please enter valid numbers";
-    } else if (!Number.isFinite(percentage)) {
-        document.getElementById("percent_label").innerText = "Inputs must be greater than 0.";
-        return;
-    } else {
-        document.getElementById("percent_label").innerText = count + "|" + percentage.toFixed(2) + "%";
-        slider.style.opacity = '1';
-        slider.disabled = false;
-        slider.min = bays_completed;
-        slider.max = weeklyGS;
-        slider.step = daily_team_size;
-        slider.value = bays_completed;
-        slider.oninput();
-    }
+    // Calculate the total weekly goal
+    weeklyGS = openGS + bays_completed; 
+
+    // Prevent division by zero errors safely up front
+    if (weeklyGS === 0 || daily_team_size === 0) { 
+        document.getElementById("percent_label").innerText = "Inputs must be greater than 0."; 
+        slider.disabled = true;
+        slider.style.opacity = '0.5';
+        return; 
+    } 
+
+    // Setup and unlock the slider
+    slider.style.opacity = '1'; 
+    slider.disabled = false; 
+    slider.min = bays_completed; 
+    slider.max = weeklyGS; 
+    slider.step = daily_team_size; 
+    slider.value = bays_completed; 
+    
+    // Trigger the slider's math immediately on form submit
+    slider.oninput(); 
 }
 
 form.addEventListener("submit", updateLabel);
